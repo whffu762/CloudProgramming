@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>자격증 입력</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 560px;
+        }
+
+        .field-error {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+
+        #wrapper {
+            height: auto;
+            padding-bottom: 500px;
+            min-height: 100%;
+
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container" style="width: 70%; margin-bottom: 10px" id="wrapper">
+        <div class="py-5 text-center">
+            <h2>자격증 입력</h2>
+        </div>
+
+        <form action method="post">
+            <span class="card" style="margin-bottom: 1rem">
+                <ul class="list-group list-group-flush">
+
+                    <li class="list-group-item" id="date">
+                        <div class="row">
+                            <label>취득날짜</label>
+                            <div style="width:200px;" class="col">
+                                <input placeholder="년" id="year" type="text" class="form-control"
+                                    style="height: 50px;" maxlength="4">
+                            </div>
+                            <div style="width:200px;" class="col">
+                                <input placeholder="월" id="month" type="text" class="form-control"
+                                    style="height: 50px;" maxlength="2">
+                            </div>
+                            <div style="width:200px;" class="col">
+                                <input placeholder="일" id="day" type="text" class="form-control"
+                                    style="height: 50px;" maxlength="2">
+                            </div>
+                        </div>
+                        <div class="field-error" style="display: none">에러 메시지</div>
+                    </li>
+
+                    <li class="list-group-item" id="certification">
+                        <input placeholder="자격증" type="text" class="form-control" style="height: 50px;">
+
+                        <div class="field-error" style="display: none">에러 메시지</div>
+                    </li>
+
+                    <li class="list-group-item" id="association">
+                        <input placeholder="발급기관" type="text" class="form-control" style="height: 50px;">
+
+                        <div class="field-error" style="display: none">에러 메시지</div>
+                    </li>
+                </ul>
+            </span>
+
+            <div style="display:inline; float: right;">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <button class="btn btn-secondary btn-lg" type="button" id="registerBtn"
+                            style="font-size:16px; width: 350px; height: 50px;">
+                            정보 입력
+                        </button>
+                    </div>
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-3">
+                        <button class="btn btn-dark btn-lg" type="button" id="cancelBtn"
+                            style="font-size:16px; width: 100px; height: 50px;">
+                            취소
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+
+<script>
+    const registerBtn = document.querySelector("#registerBtn");
+    const cancelBtn = document.querySelector("#cancelBtn");
+
+    const date = document.querySelector("#date");
+    const certification = document.querySelector("#certification");
+    const association = document.querySelector("#association");
+
+    cancelBtn.addEventListener("click", function () {
+        window.location.href = '/';
+    })
+
+    registerBtn.addEventListener("click", function () {
+
+        initErrorField();
+
+        const year = date.querySelector("#year").value;
+        const month = date.querySelector("#month").value;
+        const day = date.querySelector("#day").value;
+
+        const inputDate = getPeriod(year, month, day);
+        const inputCertification = certification.querySelector("input").value;
+        const inputAssociation = association.querySelector("input").value;
+
+        const url = "http://localhost:8080/certification";
+        const registerBody = {
+            date: inputDate,
+            certification: inputCertification,
+            association: inputAssociation,
+        }
+
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(registerBody)
+        }).then(response => {
+            return checkResponse(response);
+        }).then(errors => {
+            printErrorMessage(errors);
+        })
+    })
+
+    function getPeriod(year, month, day) {
+
+        if (year === "" || month === "" || day === "") {
+            return "";
+        }
+
+        return year + "-" + month + "-" + day;
+    }
+
+
+
+    function checkResponse(response) {
+
+        if (response.ok) {
+            alert("정보가 저장되었습니다");
+            window.location.href = '/';
+        } else if (response.status === 400) {
+            return response.json();
+        }
+    }
+
+    function printErrorMessage(errors) {
+
+        errors.forEach((error) => {
+            const itemId = "#" + `${error.key}`;
+            const item = document.querySelector(itemId);
+            const errorDiv = item.querySelector(".field-error");
+
+            const message = parseErrorMessage(error.message);
+
+            errorDiv.style.display = "block";
+            template = `<div>${message}</div>`;
+            errorDiv.innerHTML = template;
+        })
+    }
+
+    function initErrorField() {
+        const errorFields = document.querySelectorAll(".field-error");
+        errorFields.forEach(e => {
+            e.style.display = "none";
+        });
+    }
+
+    function parseErrorMessage(message) {
+
+        const messages = message.split(",").sort();
+        let result = ""
+
+        for (i = 0; i < messages.length - 1; i++) {
+            result += messages[i] + "<br>";
+        }
+
+        result += messages[messages.length - 1];
+        return result;
+    }
+</script>
+
+</html>

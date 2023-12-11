@@ -9,6 +9,14 @@
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
           crossorigin="anonymous">
     <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
         .container {
             max-width: 560px;
         }
@@ -95,14 +103,14 @@
         <div style="display:inline; float: right;">
             <div class="row">
                 <div class="col-sm-8">
-                    <button class="btn btn-primary btn-lg" type="button" id="registerBtn"
+                    <button class="btn btn-secondary btn-lg" type="button" id="registerBtn"
                             style="font-size:16px; width: 350px; height: 50px;">
                         정보 입력
                     </button>
                 </div>
                 <div class="col-sm-1"></div>
                 <div class="col-sm-3">
-                    <button class="btn btn-secondary btn-lg" type="button"
+                    <button class="btn btn-dark btn-lg" type="button"
                             id="cancelBtn" style="font-size:16px; width: 100px; height: 50px;">
                         취소
                     </button>
@@ -223,7 +231,7 @@
 
     function parseErrorMessage(message){
 
-        const messages = message.split(",");
+        const messages = message.split(",").sort();
         let result = ""
         
         for(i=0;i<messages.length-1;i++){
