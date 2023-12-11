@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+          crossorigin="anonymous">
+
+    <style>
+        .container {
+            max-width: 560px;
+        }
+        .field-error {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+        #wrapper {
+            height: auto;
+            padding-bottom: 500px;
+            min-height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" style="width: 70%; margin-bottom: 10px" id="wrapper">
+        <div class="py-5 text-center">
+            <h2>개인정보 입력</h2>
+        </div>
+    
+        <span class="card" style="margin-bottom: 1rem">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" id="korName">
+                    <input placeholder="한글 이름" type="text" class="form-control" style="height: 50px;">
+                    <div style="display: none" class="field-error">에러 메시지</div>    
+                </li>
+    
+                <li class="list-group-item" id="engName">
+                    <input placeholder="영어 이름" type="text" class="form-control" style="height: 50px;">
+                    
+                    <div style="display: none" class="field-error">에러 메시지</p>
+                </li>
+            </ul>
+        </span>
+
+        <button type="button" id="testBtn">aa</button>
+
+    </div>
+</body>
+
+<script>
+    const jsons = [
+    {
+        "key": "korName",
+        "message": "필수 입력 사항입니다,hello"
+    }
+]
+
+
+window.onload = function makeResumes() {
+    
+
+}
+
+const testBtn = document.querySelector("#testBtn");
+
+testBtn.addEventListener("click", function(){
+
+    tt = document.querySelectorAll(".field-error");
+    
+    tt.forEach((div)=>{
+        div.style.display= "none";
+    })
+
+    jsons.forEach((json)=>{
+        let tagId = "#" + `${json.key}`;
+        const tag = document.querySelector(tagId);
+        
+        let message = parseErrorMessage(json.message);
+
+
+        errorKorName = tag.querySelector('div');
+        errorKorName.innerHTML = message;
+        errorKorName.style.display = "block";
+    })
+
+});
+
+function parseErrorMessage(message){
+    const messages = message.split(",");
+    let result = ""
+    
+    for(i=0;i<messages.length-1;i++){
+        result += messages[i] + "<br>";
+    }
+
+    result += messages[messages.length-1];
+    return result;
+}
+
+
+</script>
