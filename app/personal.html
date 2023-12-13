@@ -52,7 +52,6 @@
             </li>
 
             <li class="list-group-item" id="engName">
-            
                 <input placeholder="영문 이름" type="text" class="form-control" style="height: 50px;">
                 
                 <div class="field-error" style="display: none">에러 메시지</div>
@@ -64,7 +63,7 @@
                         <input placeholder="주민등록번호 앞자리" id="residentNumFront" type="text" class="form-control" style="height: 50px;" maxlength="6">
                     </div>
                     <div style="width:400px;" class="col">
-                        <input placeholder="주민등록번호 뒷자리" id="residentNumBack" type="password" class="form-control" style="height: 50px;" maxlength="7">
+                        <input placeholder="주민등록번호 뒷자리" id="residentNumBack" type="text" class="form-control" style="height: 50px;" maxlength="7">
                     </div>
                 </div>
 
@@ -131,6 +130,64 @@
     const email = document.querySelector("#email");
     const tel = document.querySelector("#tel");
     const address = document.querySelector("#address");
+
+
+    window.onload = function (){
+        const url = "http://localhost:8080/personal-info"
+        fetch(url, {
+            method: "GET",
+            headers : {
+                "Content-Type" : "application/json"
+            }
+        }).then(response=>{
+            return response.json();
+        }).then(resume => {
+            makePersonalInfo(resume);
+        })
+    }
+
+
+    function makePersonalInfo(personalInfo){
+
+        const existedName = korName.querySelector("input");
+        const existedEngName = engName.querySelector("input");
+        
+        const existedEmail = email.querySelector("input");
+        const existedAddress = address.querySelector("input");
+        
+        splitTel(personalInfo.tel);
+        splitResidentNum(personalInfo.residentNum);
+
+        existedName.value = personalInfo.name;
+        existedEngName.value = personalInfo.engName;
+        existedEmail.value = personalInfo.email;
+        existedAddress.value = personalInfo.address;
+    }
+
+    function splitTel(telData){
+        
+        const existedTelFront = tel.querySelector("#telFront");
+        const existedTelMiddle = tel.querySelector("#telMiddle");
+        const existedTelEnd = tel.querySelector("#telEnd");
+
+        if(telData != null){
+            tels = telData.split("-")
+            existedTelFront.value = tels[0];
+            existedTelMiddle.value = tels[1];
+            existedTelEnd.value = tels[2];
+        }
+    }
+
+    function splitResidentNum(residentNumData){
+        
+        const existedResidentNumFront = residentNum.querySelector("#residentNumFront");
+        const existedResidentNumBack = residentNum.querySelector("#residentNumBack");
+        if(residentNumData != null){
+            residentNums = residentNumData.split("-");
+            existedResidentNumFront.value = residentNums[0];
+            existedResidentNumBack.value = residentNums[1];
+        }
+    }
 
     cancelBtn.addEventListener("click", function(){
         window.location.href = '/';
