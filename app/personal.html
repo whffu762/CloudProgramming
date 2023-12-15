@@ -46,7 +46,7 @@
     <span class="card" style="margin-bottom: 1rem">
         <ul class="list-group list-group-flush">
             <li class="list-group-item" id="name">
-                <input placeholder="한글 이름" type="text" class="form-control" style="height: 50px;" width="100">
+                <input placeholder="한글 이름" type="text" class="form-control" style="height: 50px;">
                 
                 <div class="field-error" style="display: none">에러 메시지</div>
             </li>
@@ -133,7 +133,7 @@
 
 
     window.onload = function (){
-        const url = "http://localhost:8080/personal-info"
+        const url = "/resume-server/personal-info"
         fetch(url, {
             method: "GET",
             headers : {
@@ -206,7 +206,7 @@
         const inputAddress = address.querySelector("input").value;
 
 
-        const url = "http://localhost:8080/personal-info";
+        const url = "resume-server/personal-info";
         const registerBody = {
             name : inputKorName,
             engName : inputEngName,
@@ -250,7 +250,7 @@
             return "";
         }
 
-        return telFront + "-" + telMiddle + "-" + telEnd; 
+        return telFront + "-" + telMiddle + "-" + telEnd;
     }
 
 

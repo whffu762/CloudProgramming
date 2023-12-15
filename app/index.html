@@ -195,7 +195,7 @@
     window.onload = getResumes();
     
     function getResumes(){
-        const url = "http://localhost:8080/resumes"
+        const url = "/resume-server/resumes"
         fetch(url, {
             method: "GET",
             headers : {
@@ -229,23 +229,23 @@
         education.forEach((each, index) =>{
             const row = document.createElement('tr');
             row.innerHTML = `
-            <tr>
-                <td>${each.educationId}</td>
+                <td style="display: none;">${each.educationId}</td>
+                <td>${index+1}</td>
                 <td>${getPeriod(each.startPeriod, each.endPeriod)}</td>
                 <td>${each.school}</td>
                 <td>${each.major}</td>
                 <td>${each.etc}</td>
-            </tr>
             `
             document.querySelector("#education-table tBody").appendChild(row);
         })
     }
 
     function makeCertification(certification){
-        certification.forEach(each =>{
+        certification.forEach((each, index) =>{
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${each.certificationId}</td>
+                <td style="display: none;">${each.certificationId}</td>
+                <td>${index+1}</td>
                 <td>${each.date}</td>
                 <td>${each.certification}</td>
                 <td>${each.association}</td>
@@ -255,15 +255,14 @@
     }
 
     function makeCareer(career){ 
-        career.forEach(each =>{
+        career.forEach((each, index) =>{
             const row = document.createElement('tr');
             row.innerHTML = `
-            <tr>
-                <td>${each.careerId}</td>
+                <td style="display: none;">${each.educationId}</td>
+                <td>${index+1}</td>
                 <td>${getPeriod(each.startPeriod, each.endPeriod)}</td>
                 <td>${each.company}</td>
                 <td>${each.task}</td>
-            </tr>
             `
             document.querySelector("#career-table tBody").appendChild(row);
         })
@@ -271,30 +270,37 @@
 
     const educationRow = document.querySelector("#education-row");
     educationRow.addEventListener('click', function(e){
+        deleteRow("education", e);
+    })
 
-        const clickedTable = e.target;
+    const certificationRow = document.querySelector("#certification-row");
+    certificationRow.addEventListener('click', function(e){
+        deleteRow("certification", e);
+    })
+
+    const careerRow = document.querySelector("#career-row");
+    careerRow.addEventListener('click', function(e){
+        deleteRow("career", e);
+    })
+
+    function deleteRow(table, row){
+        const clickedTable = row.target;
         const clickedRow = clickedTable.parentNode;
         const id = clickedRow.cells[0].textContent;
         
         if(confirm(id + "번을 삭제하시겠습니까?")){
-            const url = "http://localhost:8080/education?id=" + id;
+            const url = "/resume-server/"+`${table}`+"?id=" + id;
             console.log(url);
             fetch(url, {
                 method: "DELETE"
             }).then(response => {
                 if(response.ok){
+                    clickedRow.remove();
                     alert("삭제되었습니다");
-                    getResumes();
                 }
             })
         }
-    })
-
-    const careerRow = document.querySelector("#career-row");
-    careerRow.addEventListener('click', function(e){
-
-
-    })
+    }
 
     function getPeriod(start, end){
         return start + "~" + end
@@ -303,6 +309,7 @@
     function inputImg(){
         console.log("이미지입력");
     }
+
     function writePersonalInfo(){
         window.location.href = '/personal-info';
     }

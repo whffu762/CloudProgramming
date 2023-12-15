@@ -27,6 +27,3 @@ app.get("/career", (req, resp)=>{
     resp.sendFile(__dirname + '/app/career.html');
 });
 
-app.get("/test", (req, resp) =>{
-    resp.sendFile(__dirname + '/tmp/test.html');
-})

@@ -145,7 +145,7 @@
         const inputCompany = company.querySelector("input").value;
         const inputTask = task.querySelector("input").value;
 
-        const url = "http://localhost:8080/career";
+        const url = "http://resume-server:8080/career";
         const registerBody = {
             startPeriod : inputStartPeriod,
             endPeriod : inputEndPeriod,
@@ -189,11 +189,10 @@
     }
 
     function printErrorMessage(errors){
-        console.log(errors);
+
         errors.forEach((error)=>{
             const itemId = "#" + `${error.key}`;
             const item = document.querySelector(itemId);
-            console.log(item);
             const errorDiv = item.querySelector(".field-error");
             
             const message = parseErrorMessage(error.message);
@@ -224,5 +223,7 @@
         result += messages[messages.length-1];
         return result;
     }
+
+
 </script>
 </html>
